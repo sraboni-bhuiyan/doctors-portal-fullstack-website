@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 
 const MyAppointments = () => {
 
     const [appointments, setAppointments] = useState([]);
     const [user] = useAuthState(auth);
+    const navigate = useNavigate()
 
     useEffect( ()=>{
         if(user){
@@ -17,7 +19,9 @@ const MyAppointments = () => {
             })
             .then(res=>{
                 console.log('res',res);
-                if(res.status === 401)
+                if(res.status === 401 || res.status === 403){
+                    navigate('/');
+                }
                 return res.json()
             })
             .then(data=>{
